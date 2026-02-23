@@ -1,3 +1,5 @@
+// app.js (layout Dock inferior + pesquisa + favoritos ⭐)
+
 // Helper: cria um "logo" SVG (data URI) quando não há ficheiro público fácil.
 function svgLogo(text) {
   const svg = `
@@ -17,27 +19,99 @@ function svgLogo(text) {
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg.trim())}`;
 }
 
-// URLs "estáveis" do Commons (não precisas do hash do upload.wikimedia)
-const commons = (filename) => `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(filename)}`;
+// URLs "estáveis" do Wikimedia Commons (não precisas do hash do upload.wikimedia)
+const commons = (filename) =>
+  `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(filename)}`;
 
+// Canais (nota: alguns "diretos" podem não permitir embed em iframe)
 const channels = [
   // RTP
-  { key: "rtp1", name: "RTP1", hint: "Generalista", url: "https://www.rtp.pt/play/direto/rtp1", logo: commons("RTP1 - Logo 2016.svg"), hotkey: "1" },
-  { key: "rtp2", name: "RTP2", hint: "Cultura", url: "https://www.rtp.pt/play/direto/rtp2", logo: commons("RTP2%202016%20(Reduced%20Version).svg"), hotkey: "2" },
-  { key: "rtp3", name: "RTP3", hint: "Notícias", url: "https://www.rtp.pt/play/direto/rtp3", logo: commons("RTP3%202016%20(Reduced%20Version).svg"), hotkey: "3" },
+  {
+    key: "rtp1",
+    name: "RTP1",
+    hint: "Generalista",
+    url: "https://www.rtp.pt/play/direto/rtp1",
+    logo: commons("RTP1 - Logo 2016.svg"),
+    hotkey: "1",
+  },
+  {
+    key: "rtp2",
+    name: "RTP2",
+    hint: "Cultura",
+    url: "https://www.rtp.pt/play/direto/rtp2",
+    logo: commons("RTP2 2016 (Reduced Version).svg"),
+    hotkey: "2",
+  },
+  {
+    key: "rtp3",
+    name: "RTP3",
+    hint: "Notícias",
+    url: "https://www.rtp.pt/play/direto/rtp3",
+    logo: commons("RTP3 2016 (Reduced Version).svg"),
+    hotkey: "3",
+  },
 
-  // SIC / TVI / CMTV (nota: a emissão pode depender do fornecedor/iframe)
-  { key: "sic", name: "SIC", hint: "Generalista", url: "https://www.sic.pt/direto/", logo: svgLogo("SIC"), hotkey: "4" },
-  { key: "tvi", name: "TVI", hint: "Generalista", url: "https://tvi.iol.pt/direto", logo: commons("Log%C3%B3tipo%20TVI.png"), hotkey: "5" },
-  { key: "cmtv", name: "CMTV", hint: "Notícias / Geral", url: "https://www.cmjornal.pt/multimedia/videos/direto-cmtv", logo: commons("CMTV.jpg"), hotkey: "6" },
+  // Generalistas
+  {
+    key: "sic",
+    name: "SIC",
+    hint: "Generalista",
+    url: "https://www.sic.pt/direto/",
+    logo: svgLogo("SIC"),
+    hotkey: "4",
+  },
+  {
+    key: "tvi",
+    name: "TVI",
+    hint: "Generalista",
+    url: "https://tvi.iol.pt/direto",
+    logo: commons("Logótipo TVI.png"),
+    hotkey: "5",
+  },
 
-  // Notícias
-  { key: "sicn", name: "SIC Notícias", hint: "Notícias", url: "https://sicnoticias.pt/direto/", logo: commons("SIC%20Not%C3%ADcias%20(2023).svg"), hotkey: "7" },
-  { key: "cnnp", name: "CNN Portugal", hint: "Notícias", url: "https://cnnportugal.iol.pt/direto", logo: commons("CNN%20Portugal.svg"), hotkey: "8" },
+  // Notícias / Geral
+  {
+    key: "cmtv",
+    name: "CMTV",
+    hint: "Notícias / Geral",
+    url: "https://www.cmjornal.pt/multimedia/videos/direto-cmtv",
+    logo: commons("CMTV.jpg"),
+    hotkey: "6",
+  },
+  {
+    key: "sicn",
+    name: "SIC Notícias",
+    hint: "Notícias",
+    url: "https://sicnoticias.pt/direto/",
+    logo: commons("SIC Notícias (2023).svg"),
+    hotkey: "7",
+  },
+  {
+    key: "cnnp",
+    name: "CNN Portugal",
+    hint: "Notícias",
+    url: "https://cnnportugal.iol.pt/direto",
+    logo: commons("CNN Portugal.svg"),
+    hotkey: "8",
+  },
 
-  // Outros
-  { key: "canal11", name: "Canal 11", hint: "Desporto", url: "https://canal11.pt/direto", logo: commons("Logo%20Canal%2011%20FPF.svg"), hotkey: "9" },
-  { key: "portocanal", name: "Porto Canal", hint: "Região / Geral", url: "https://portocanal.sapo.pt/direto", logo: commons("Porto%20Canal%20logo.jpg"), hotkey: "0" },
+  // Desporto / Outros
+  {
+    key: "canal11",
+    name: "Canal 11",
+    hint: "Desporto",
+    url: "https://canal11.pt/direto",
+    logo: commons("Logo Canal 11 FPF.svg"),
+    hotkey: "9",
+  },
+  {
+    key: "portocanal",
+    name: "Porto Canal",
+    hint: "Região / Geral",
+    url: "https://portocanal.sapo.pt/direto",
+    logo: commons("Porto Canal logo.jpg"),
+    hotkey: "0",
+  },
 ];
 
 const els = {
@@ -60,12 +134,16 @@ const LS = {
 };
 
 function loadFavs() {
-  try { return new Set(JSON.parse(localStorage.getItem(LS.favs) || "[]")); }
-  catch { return new Set(); }
+  try {
+    return new Set(JSON.parse(localStorage.getItem(LS.favs) || "[]"));
+  } catch {
+    return new Set();
+  }
 }
 function saveFavs(set) {
   localStorage.setItem(LS.favs, JSON.stringify([...set]));
 }
+
 let favs = loadFavs();
 
 let state = {
@@ -82,27 +160,29 @@ function matchesQuery(ch, q) {
 
 function renderList() {
   const q = state.query.trim();
-  const items = channels.filter((ch) => matchesQuery(ch, q)).filter((ch) => !state.favOnly || favs.has(ch.key));
+  const items = channels
+    .filter((ch) => matchesQuery(ch, q))
+    .filter((ch) => !state.favOnly || favs.has(ch.key));
 
   els.list.innerHTML = "";
+
   items.forEach((ch) => {
     const card = document.createElement("button");
     card.type = "button";
-    card.className = `channel-card${ch.key === state.active ? " active" : ""}`;
+    card.className = `channel-pill${ch.key === state.active ? " active" : ""}`;
     card.dataset.channel = ch.key;
-    card.setAttribute("role", "listitem");
 
     const logo = document.createElement("img");
-    logo.className = "channel-card__logo";
+    logo.className = "channel-pill__logo";
     logo.alt = `Logo ${ch.name}`;
     logo.loading = "lazy";
     logo.src = ch.logo;
 
     const meta = document.createElement("div");
-    meta.className = "channel-card__meta";
+    meta.className = "channel-pill__meta";
     meta.innerHTML = `
-      <div class="channel-card__name">${ch.name}</div>
-      <div class="channel-card__hint">${ch.hint}</div>
+      <div class="channel-pill__name">${ch.name}</div>
+      <div class="channel-pill__hint">${ch.hint}</div>
     `;
 
     const favBtn = document.createElement("button");
@@ -120,17 +200,11 @@ function renderList() {
       renderList();
     });
 
-    const live = document.createElement("span");
-    live.className = "live-dot";
-    live.setAttribute("aria-hidden", "true");
-
     card.appendChild(logo);
     card.appendChild(meta);
     card.appendChild(favBtn);
-    card.appendChild(live);
 
     card.addEventListener("click", () => setActive(ch.key));
-
     els.list.appendChild(card);
   });
 }
@@ -144,7 +218,7 @@ function setActive(key, { save = true } = {}) {
   // UI
   els.title.textContent = ch.name;
 
-  // Carrega stream
+  // Carrega stream (força refresh)
   els.frame.src = ch.url;
 
   if (save) localStorage.setItem(LS.channel, key);
@@ -153,18 +227,20 @@ function setActive(key, { save = true } = {}) {
 }
 
 function setupSearch() {
+  if (!els.search) return;
+
   els.search.value = state.query;
-  els.favOnly.setAttribute("aria-pressed", String(state.favOnly));
-  els.clearSearch.style.opacity = els.search.value ? "1" : "0.6";
+  if (els.favOnly) els.favOnly.setAttribute("aria-pressed", String(state.favOnly));
+  if (els.clearSearch) els.clearSearch.style.opacity = els.search.value ? "1" : "0.6";
 
   els.search.addEventListener("input", () => {
     state.query = els.search.value;
     localStorage.setItem(LS.query, state.query);
-    els.clearSearch.style.opacity = els.search.value ? "1" : "0.6";
+    if (els.clearSearch) els.clearSearch.style.opacity = els.search.value ? "1" : "0.6";
     renderList();
   });
 
-  els.clearSearch.addEventListener("click", () => {
+  els.clearSearch?.addEventListener("click", () => {
     els.search.value = "";
     state.query = "";
     localStorage.setItem(LS.query, "");
@@ -173,7 +249,7 @@ function setupSearch() {
     renderList();
   });
 
-  els.favOnly.addEventListener("click", () => {
+  els.favOnly?.addEventListener("click", () => {
     state.favOnly = !state.favOnly;
     localStorage.setItem(LS.favOnly, state.favOnly ? "1" : "0");
     els.favOnly.setAttribute("aria-pressed", String(state.favOnly));
@@ -190,14 +266,15 @@ function setupHotkeys() {
       return;
     }
 
-    const key = e.key;
-    const ch = channels.find((c) => c.hotkey === key);
+    const ch = channels.find((c) => c.hotkey === e.key);
     if (ch) setActive(ch.key);
   });
 }
 
 function setupActions() {
-  els.btnReload?.addEventListener("click", () => (els.frame.src = els.frame.src));
+  els.btnReload?.addEventListener("click", () => {
+    els.frame.src = els.frame.src;
+  });
 
   els.btnFullscreen?.addEventListener("click", () => {
     const el = els.frame;
@@ -207,6 +284,7 @@ function setupActions() {
 }
 
 function setupClock() {
+  if (!els.clock) return;
   const tick = () => {
     const now = new Date();
     const hh = String(now.getHours()).padStart(2, "0");
@@ -217,7 +295,7 @@ function setupClock() {
   setInterval(tick, 30_000);
 }
 
-// init
+// Init
 setupSearch();
 setupHotkeys();
 setupActions();
