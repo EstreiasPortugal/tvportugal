@@ -1,0 +1,9 @@
+{
+  "name": "tvportugal",
+  "version": "1.0.0",
+  "description": "Guia TV com canais RTP",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  }
+}

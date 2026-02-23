@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="pt-PT">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Guia TV Portugal</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header>
+        <h1>Guia TV Portugal</h1>
+        <p>Seleciona um canal público RTP para ver em direto.</p>
+      </header>
+
+      <section class="layout">
+        <aside class="channel-list" aria-label="Seleção de canais">
+          <h2>Canais</h2>
+          <button class="channel-btn active" data-channel="rtp1">RTP1</button>
+          <button class="channel-btn" data-channel="rtp2">RTP2</button>
+          <button class="channel-btn" data-channel="rtp3">RTP3</button>
+        </aside>
+
+        <section class="player-area">
+          <h2 id="channel-title">A ver: RTP1</h2>
+          <div class="video-wrapper">
+            <iframe
+              id="channel-frame"
+              title="Emissão em direto"
+              src="https://www.rtp.pt/play/direto/rtp1"
+              allow="autoplay; fullscreen; encrypted-media"
+              referrerpolicy="strict-origin-when-cross-origin"
+              loading="lazy"
+            ></iframe>
+          </div>
+          <p class="note">
+            Nota: a reprodução depende da disponibilidade da RTP Play e pode estar limitada por região.
+          </p>
+        </section>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
