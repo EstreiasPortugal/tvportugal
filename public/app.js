@@ -1,5 +1,5 @@
 const channels = {
-  rtp1: { name: 'RTP1', url: 'https://sportzonline.click/channels/pt/sporttv1.php' },
+  rtp1: { name: 'RTP1', url: 'https://www.rtp.pt/play/direto/rtp2' },
   rtp2: { name: 'RTP2', url: 'https://www.rtp.pt/play/direto/rtp2' },
   rtp3: { name: 'RTP3', url: 'https://www.rtp.pt/play/direto/rtp3' },
 };
