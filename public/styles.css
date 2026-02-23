@@ -166,3 +166,21 @@ iframe{width:100%;height:100%;border:0}
   cursor:pointer;display:grid;place-items:center;
 }
 .fav-btn.is-fav{color:#ffd54a;border-color:rgba(255,213,74,.35);background:rgba(255,213,74,.10)}
+
+/* 1) Impede qualquer overflow horizontal de alargar a página */
+html, body { width: 100%; overflow-x: hidden; }
+
+/* 2) Garante que os containers podem encolher (muito importante em flex/grid) */
+.app, .player, .dock, .dock__row { min-width: 0; }
+
+/* 3) Travar o dock a não empurrar o layout */
+.dock { width: 100%; }
+.dock__row { max-width: 100%; overflow-x: auto; overflow-y: hidden; }
+
+/* 4) Player/Video: força a respeitar a largura do container */
+.player { width: 100%; }
+.video { width: 100%; max-width: 100%; }
+iframe { display: block; width: 100%; max-width: 100%; }
+
+/* 5) Se algum pill ainda estiver a forçar demasiado, limita */
+.channel-pill { max-width: 320px; }
