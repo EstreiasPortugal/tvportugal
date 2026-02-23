@@ -7,78 +7,56 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <main class="app">
+    <main class="app app--dock">
       <header class="topbar">
         <div class="brand">
           <div class="brand__dot" aria-hidden="true"></div>
           <div class="brand__text">
             <h1>Guia TV Portugal</h1>
-            <p>Pesquisa, favoritos ⭐ e emissão em direto.</p>
+            <p>Pesquisa + Favoritos ⭐ + Direto</p>
           </div>
         </div>
 
         <div class="topbar__right">
-          <div class="chip" id="clock" aria-label="Hora atual">--:--</div>
-          <a class="chip chip--ghost" href="https://www.rtp.pt/play/" target="_blank" rel="noreferrer">RTP Play</a>
+          <div class="chip" id="clock">--:--</div>
+          <button id="fav-only" class="chip chip--toggle" type="button" aria-pressed="false">⭐</button>
         </div>
       </header>
 
-      <section class="shell">
-        <aside class="sidebar" aria-label="Seleção de canais">
-          <div class="sidebar__title">
-            <h2>Canais</h2>
-            <span class="pill">AO VIVO</span>
+      <section class="player player--full">
+        <div class="player__head">
+          <div>
+            <div class="player__kicker">A ver agora</div>
+            <h2 id="channel-title" class="player__title">—</h2>
           </div>
-
-          <div class="filters">
-            <label class="search" aria-label="Pesquisar canal">
-              <span class="search__icon" aria-hidden="true">⌕</span>
-              <input id="search" type="search" placeholder="Pesquisar (ex: SIC, TVI, notícias...)" autocomplete="off" />
-              <button id="clear-search" class="icon-btn" type="button" title="Limpar">×</button>
-            </label>
-
-            <button id="fav-only" class="chip chip--toggle" type="button" aria-pressed="false" title="Mostrar só favoritos">
-              ⭐ Favoritos
-            </button>
+          <div class="player__actions">
+            <button class="btn" id="btn-reload" type="button">Recarregar</button>
+            <button class="btn btn--primary" id="btn-fullscreen" type="button">Ecrã inteiro</button>
           </div>
+        </div>
 
-          <div id="channel-list" class="channel-grid" role="list"></div>
+        <div class="video">
+          <iframe
+            id="channel-frame"
+            title="Emissão em direto"
+            src=""
+            allow="autoplay; fullscreen; encrypted-media"
+            referrerpolicy="strict-origin-when-cross-origin"
+            loading="lazy"
+          ></iframe>
+        </div>
 
-          <p class="sidebar__note">
-            Nota: a reprodução depende do player/fornecedor e pode estar limitada por região.
-          </p>
-        </aside>
+        <div class="player__foot">
+          <label class="search search--dock" aria-label="Pesquisar canal">
+            <span class="search__icon" aria-hidden="true">⌕</span>
+            <input id="search" type="search" placeholder="Pesquisar canais..." autocomplete="off" />
+            <button id="clear-search" class="icon-btn" type="button" title="Limpar">×</button>
+          </label>
+        </div>
+      </section>
 
-        <section class="player">
-          <div class="player__head">
-            <div>
-              <div class="player__kicker">A ver agora</div>
-              <h2 id="channel-title" class="player__title">—</h2>
-            </div>
-
-            <div class="player__actions">
-              <button class="btn" id="btn-reload" type="button" title="Recarregar stream">Recarregar</button>
-              <button class="btn btn--primary" id="btn-fullscreen" type="button" title="Ecrã inteiro">Ecrã inteiro</button>
-            </div>
-          </div>
-
-          <div class="video">
-            <iframe
-              id="channel-frame"
-              title="Emissão em direto"
-              src=""
-              allow="autoplay; fullscreen; encrypted-media"
-              referrerpolicy="strict-origin-when-cross-origin"
-              loading="lazy"
-            ></iframe>
-          </div>
-
-          <div class="player__foot">
-            <span class="hint">Atalhos: 1–9 para trocar rápido • R para recarregar</span>
-            <span class="sep" aria-hidden="true">•</span>
-            <span class="hint">Canal e favoritos ficam guardados</span>
-          </div>
-        </section>
+      <section class="dock" aria-label="Canais">
+        <div id="channel-list" class="dock__row"></div>
       </section>
     </main>
 
