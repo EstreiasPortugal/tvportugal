@@ -13,15 +13,13 @@
           <div class="brand__dot" aria-hidden="true"></div>
           <div class="brand__text">
             <h1>Guia TV Portugal</h1>
-            <p>Seleciona um canal e vê em direto.</p>
+            <p>Pesquisa, favoritos ⭐ e emissão em direto.</p>
           </div>
         </div>
 
         <div class="topbar__right">
           <div class="chip" id="clock" aria-label="Hora atual">--:--</div>
-          <a class="chip chip--ghost" href="https://www.rtp.pt/play/" target="_blank" rel="noreferrer">
-            RTP Play
-          </a>
+          <a class="chip chip--ghost" href="https://www.rtp.pt/play/" target="_blank" rel="noreferrer">RTP Play</a>
         </div>
       </header>
 
@@ -32,37 +30,22 @@
             <span class="pill">AO VIVO</span>
           </div>
 
-          <div class="channel-grid">
-            <button class="channel-card active" data-channel="rtp1" type="button">
-              <img class="channel-card__logo" alt="Logo RTP1" loading="lazy" />
-              <div class="channel-card__meta">
-                <div class="channel-card__name">RTP1</div>
-                <div class="channel-card__hint">Generalista</div>
-              </div>
-              <span class="live-dot" aria-hidden="true"></span>
-            </button>
+          <div class="filters">
+            <label class="search" aria-label="Pesquisar canal">
+              <span class="search__icon" aria-hidden="true">⌕</span>
+              <input id="search" type="search" placeholder="Pesquisar (ex: SIC, TVI, notícias...)" autocomplete="off" />
+              <button id="clear-search" class="icon-btn" type="button" title="Limpar">×</button>
+            </label>
 
-            <button class="channel-card" data-channel="rtp2" type="button">
-              <img class="channel-card__logo" alt="Logo RTP2" loading="lazy" />
-              <div class="channel-card__meta">
-                <div class="channel-card__name">RTP2</div>
-                <div class="channel-card__hint">Cultura</div>
-              </div>
-              <span class="live-dot" aria-hidden="true"></span>
-            </button>
-
-            <button class="channel-card" data-channel="rtp3" type="button">
-              <img class="channel-card__logo" alt="Logo RTP3" loading="lazy" />
-              <div class="channel-card__meta">
-                <div class="channel-card__name">RTP3</div>
-                <div class="channel-card__hint">Notícias</div>
-              </div>
-              <span class="live-dot" aria-hidden="true"></span>
+            <button id="fav-only" class="chip chip--toggle" type="button" aria-pressed="false" title="Mostrar só favoritos">
+              ⭐ Favoritos
             </button>
           </div>
 
+          <div id="channel-list" class="channel-grid" role="list"></div>
+
           <p class="sidebar__note">
-            Nota: a reprodução depende da RTP Play e pode estar limitada por região.
+            Nota: a reprodução depende do player/fornecedor e pode estar limitada por região.
           </p>
         </aside>
 
@@ -70,7 +53,7 @@
           <div class="player__head">
             <div>
               <div class="player__kicker">A ver agora</div>
-              <h2 id="channel-title" class="player__title">RTP1</h2>
+              <h2 id="channel-title" class="player__title">—</h2>
             </div>
 
             <div class="player__actions">
@@ -83,7 +66,7 @@
             <iframe
               id="channel-frame"
               title="Emissão em direto"
-              src="https://www.rtp.pt/play/direto/rtp1"
+              src=""
               allow="autoplay; fullscreen; encrypted-media"
               referrerpolicy="strict-origin-when-cross-origin"
               loading="lazy"
@@ -91,9 +74,9 @@
           </div>
 
           <div class="player__foot">
-            <span class="hint">Dica: usa as teclas 1 / 2 / 3 para trocar rapidamente.</span>
+            <span class="hint">Atalhos: 1–9 para trocar rápido • R para recarregar</span>
             <span class="sep" aria-hidden="true">•</span>
-            <span class="hint">O canal selecionado fica guardado.</span>
+            <span class="hint">Canal e favoritos ficam guardados</span>
           </div>
         </section>
       </section>
