@@ -1,7 +1,82 @@
-// app.js (layout Dock inferior + pesquisa + favoritos ⭐ + mais canais)
+// app.js (layout Dock inferior + pesquisa + favoritos ⭐ + password por dias)
 
-// Helper: cria um "logo" SVG (data URI) quando não há ficheiro público fácil.
+// ---------- PASSWORD LOCK (persistente por dias) ----------
+const APP_PASSWORD = "texugona";  // <- password
+const DEFAULT_REMEMBER_DAYS = 7;  // <- valor predefinido no input
+const LOCK_KEY = "tv_unlock_until";
+
+const lockEls = {
+  lock: document.getElementById("lock"),
+  app: document.getElementById("app"),
+  form: document.getElementById("lock-form"),
+  pass: document.getElementById("pin"),
+  err: document.getElementById("lock-error"),
+  days: document.getElementById("remember-days"),
+};
+
+function nowMs() {
+  return Date.now();
+}
+
+function isUnlocked() {
+  const until = Number(localStorage.getItem(LOCK_KEY) || "0");
+  return Number.isFinite(until) && until > nowMs();
+}
+
+function setUnlockForDays(days) {
+  const d = Math.max(1, Math.min(365, Number(days) || DEFAULT_REMEMBER_DAYS));
+  const until = nowMs() + d * 24 * 60 * 60 * 1000;
+  localStorage.setItem(LOCK_KEY, String(until));
+}
+
+function showApp() {
+  lockEls.lock.style.display = "none";
+  lockEls.app.style.display = "";
+}
+
+function showLock() {
+  lockEls.app.style.display = "none";
+  lockEls.lock.style.display = "";
+  lockEls.err.textContent = "";
+  lockEls.pass.value = "";
+  lockEls.days.value = String(DEFAULT_REMEMBER_DAYS);
+  lockEls.pass.focus();
+}
+
+(function initLock() {
+  // default days
+  if (lockEls.days) lockEls.days.value = String(DEFAULT_REMEMBER_DAYS);
+
+  if (isUnlocked()) {
+    showApp();
+    return;
+  }
+
+  showLock();
+
+  lockEls.form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const entered = (lockEls.pass.value || "").trim();
+
+    if (!entered) {
+      lockEls.err.textContent = "Introduz a password.";
+      return;
+    }
+    if (entered !== APP_PASSWORD) {
+      lockEls.err.textContent = "Password incorreta.";
+      lockEls.pass.value = "";
+      lockEls.pass.focus();
+      return;
+    }
+
+    setUnlockForDays(lockEls.days.value);
+    showApp();
+  });
+})();
+
+// ---------- TV APP ----------
 function svgLogo(text) {
+  const safe = String(text).slice(0, 14);
   const svg = `
   <svg xmlns="http://www.w3.org/2000/svg" width="220" height="120" viewBox="0 0 220 120">
     <defs>
@@ -14,142 +89,44 @@ function svgLogo(text) {
       </filter>
     </defs>
     <rect x="10" y="18" width="200" height="84" rx="18" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.18)"/>
-    <text x="110" y="78" text-anchor="middle" font-family="Inter, Arial" font-size="54" font-weight="800" fill="url(#g)" filter="url(#s)">${text}</text>
+    <text x="110" y="78" text-anchor="middle" font-family="Inter, Arial" font-size="40" font-weight="800" fill="url(#g)" filter="url(#s)">${safe}</text>
   </svg>`;
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg.trim())}`;
 }
 
-// URLs "estáveis" do Wikimedia Commons (quando existe ficheiro público)
 const commons = (filename) =>
   `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(filename)}`;
 
 /**
- * Canais (nota: alguns "diretos" podem não permitir embed em iframe — depende de X-Frame-Options/region)
- * Atalhos:
- * 1-9,0 e também Q/W/E/R para os 4 canais extra RTP (Açores/Madeira/Memória/Internacional)
+ * Nota: alguns "diretos" podem não permitir embed em iframe
+ * Hotkeys:
+ * 1-9,0 e também Q/W/E/T para os 4 canais extra RTP (Açores/Madeira/Memória/Internacional)
+ * R = recarregar
  */
 const channels = [
   // RTP
-  {
-    key: "rtp1",
-    name: "RTP1",
-    hint: "Generalista",
-    url: "https://www.rtp.pt/play/direto/rtp1",
-    logo: commons("RTP1 - Logo 2016.svg"),
-    hotkey: "1",
-  },
-  {
-    key: "rtp2",
-    name: "RTP2",
-    hint: "Cultura",
-    url: "https://www.rtp.pt/play/direto/rtp2",
-    logo: commons("RTP2 2016 (Reduced Version).svg"),
-    hotkey: "2",
-  },
-  {
-    key: "rtp3",
-    name: "RTP3",
-    hint: "Notícias",
-    url: "https://www.rtp.pt/play/direto/rtp3",
-    logo: commons("RTP3 2016 (Reduced Version).svg"),
-    hotkey: "3",
-  },
+  { key: "rtp1", name: "RTP1", hint: "Generalista", url: "https://www.rtp.pt/play/direto/rtp1", logo: commons("RTP1 - Logo 2016.svg"), hotkey: "1" },
+  { key: "rtp2", name: "RTP2", hint: "Cultura", url: "https://www.rtp.pt/play/direto/rtp2", logo: commons("RTP2 2016 (Reduced Version).svg"), hotkey: "2" },
+  { key: "rtp3", name: "RTP3", hint: "Notícias", url: "https://www.rtp.pt/play/direto/rtp3", logo: commons("RTP3 2016 (Reduced Version).svg"), hotkey: "3" },
 
   // Generalistas
-  {
-    key: "sic",
-    name: "SIC",
-    hint: "Generalista",
-    url: "https://www.sic.pt/direto/",
-    logo: svgLogo("SIC"),
-    hotkey: "4",
-  },
-  {
-    key: "tvi",
-    name: "TVI",
-    hint: "Generalista",
-    url: "https://tvi.iol.pt/direto",
-    logo: commons("Logótipo TVI.png"),
-    hotkey: "5",
-  },
+  { key: "sic", name: "SIC", hint: "Generalista", url: "https://www.sic.pt/direto/", logo: svgLogo("SIC"), hotkey: "4" },
+  { key: "tvi", name: "TVI", hint: "Generalista", url: "https://tvi.iol.pt/direto", logo: commons("Logótipo TVI.png"), hotkey: "5" },
 
   // Notícias / Geral
-  {
-    key: "cmtv",
-    name: "CMTV",
-    hint: "Notícias / Geral",
-    url: "https://www.cmjornal.pt/multimedia/videos/direto-cmtv",
-    logo: commons("CMTV.jpg"),
-    hotkey: "6",
-  },
-  {
-    key: "sicn",
-    name: "SIC Notícias",
-    hint: "Notícias",
-    url: "https://sicnoticias.pt/direto/",
-    logo: commons("SIC Notícias (2023).svg"),
-    hotkey: "7",
-  },
-  {
-    key: "cnnp",
-    name: "CNN Portugal",
-    hint: "Notícias",
-    url: "https://cnnportugal.iol.pt/direto",
-    logo: commons("CNN Portugal.svg"),
-    hotkey: "8",
-  },
+  { key: "cmtv", name: "CMTV", hint: "Notícias / Geral", url: "https://www.cmjornal.pt/multimedia/videos/direto-cmtv", logo: commons("CMTV.jpg"), hotkey: "6" },
+  { key: "sicn", name: "SIC Notícias", hint: "Notícias", url: "https://sicnoticias.pt/direto/", logo: commons("SIC Notícias (2023).svg"), hotkey: "7" },
+  { key: "cnnp", name: "CNN Portugal", hint: "Notícias", url: "https://cnnportugal.iol.pt/direto", logo: commons("CNN Portugal.svg"), hotkey: "8" },
 
   // Desporto / Outros
-  {
-    key: "canal11",
-    name: "Canal 11",
-    hint: "Desporto",
-    url: "https://canal11.pt/direto",
-    logo: commons("Logo Canal 11 FPF.svg"),
-    hotkey: "9",
-  },
-  {
-    key: "portocanal",
-    name: "Porto Canal",
-    hint: "Região / Geral",
-    url: "https://portocanal.sapo.pt/direto",
-    logo: commons("Porto Canal logo.jpg"),
-    hotkey: "0",
-  },
+  { key: "canal11", name: "Canal 11", hint: "Desporto", url: "https://canal11.pt/direto", logo: commons("Logo Canal 11 FPF.svg"), hotkey: "9" },
+  { key: "portocanal", name: "Porto Canal", hint: "Região / Geral", url: "https://portocanal.sapo.pt/direto", logo: commons("Porto Canal logo.jpg"), hotkey: "0" },
 
-  // +4 canais (RTP Play) — se algum logo falhar, usamos SVG bonito/consistente
-  {
-    key: "rtpacores",
-    name: "RTP Açores",
-    hint: "Regional",
-    url: "https://www.rtp.pt/play/direto/rtpacores",
-    logo: svgLogo("RTP Açores"),
-    hotkey: "q",
-  },
-  {
-    key: "rtpmadeira",
-    name: "RTP Madeira",
-    hint: "Regional",
-    url: "https://www.rtp.pt/play/direto/rtpmadeira",
-    logo: svgLogo("RTP Madeira"),
-    hotkey: "w",
-  },
-  {
-    key: "rtpmemoria",
-    name: "RTP Memória",
-    hint: "Arquivo / Clássicos",
-    url: "https://www.rtp.pt/play/direto/rtpmemoria",
-    logo: svgLogo("RTP Memória"),
-    hotkey: "e",
-  },
-  {
-    key: "rtpinternacional",
-    name: "RTP Internacional",
-    hint: "Diáspora",
-    url: "https://www.rtp.pt/play/direto/rtpinternacional",
-    logo: svgLogo("RTP Int."),
-    hotkey: "r",
-  },
+  // +4 canais (RTP Play)
+  { key: "rtpacores", name: "RTP Açores", hint: "Regional", url: "https://www.rtp.pt/play/direto/rtpacores", logo: svgLogo("RTP Açores"), hotkey: "q" },
+  { key: "rtpmadeira", name: "RTP Madeira", hint: "Regional", url: "https://www.rtp.pt/play/direto/rtpmadeira", logo: svgLogo("RTP Madeira"), hotkey: "w" },
+  { key: "rtpmemoria", name: "RTP Memória", hint: "Arquivo / Clássicos", url: "https://www.rtp.pt/play/direto/rtpmemoria", logo: svgLogo("RTP Memória"), hotkey: "e" },
+  { key: "rtpinternacional", name: "RTP Internacional", hint: "Diáspora", url: "https://www.rtp.pt/play/direto/rtpinternacional", logo: svgLogo("RTP Int."), hotkey: "t" },
 ];
 
 const els = {
@@ -262,11 +239,8 @@ function setActive(key, { save = true } = {}) {
 
   state.active = key;
 
-  // UI
   els.title.textContent = ch.name;
-
-  // Carrega stream (força refresh)
-  els.frame.src = ch.url;
+  els.frame.src = ch.url; // força refresh
 
   if (save) localStorage.setItem(LS.channel, key);
 
@@ -277,7 +251,6 @@ function setupSearch() {
   if (!els.search) return;
 
   els.search.value = state.query;
-
   if (els.favOnly) els.favOnly.setAttribute("aria-pressed", String(state.favOnly));
   if (els.clearSearch) els.clearSearch.style.opacity = els.search.value ? "1" : "0.6";
 
@@ -310,14 +283,11 @@ function setupHotkeys() {
     const tag = e.target?.tagName;
     if (tag && ["INPUT", "TEXTAREA"].includes(tag)) return;
 
+    // R = recarregar
     if (e.key.toLowerCase() === "r") {
-      // NOTA: 'r' está a ser usado como hotkey para RTP Internacional;
-      // para recarregar, usa Shift+R.
-      if (e.shiftKey) els.frame.src = els.frame.src;
+      els.frame.src = els.frame.src;
       return;
     }
-
-    if (e.key.toLowerCase() === "shift") return;
 
     const pressed = e.key.length === 1 ? e.key.toLowerCase() : e.key;
     const ch = channels.find((c) => String(c.hotkey).toLowerCase() === pressed);
@@ -349,7 +319,7 @@ function setupClock() {
   setInterval(tick, 30_000);
 }
 
-// Init
+// Init (quando a app já está visível, isto corre na mesma)
 setupSearch();
 setupHotkeys();
 setupActions();
