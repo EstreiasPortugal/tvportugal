@@ -1,4 +1,4 @@
-// app.js (layout Dock inferior + pesquisa + favoritos ⭐)
+// app.js (layout Dock inferior + pesquisa + favoritos ⭐ + mais canais)
 
 // Helper: cria um "logo" SVG (data URI) quando não há ficheiro público fácil.
 function svgLogo(text) {
@@ -19,11 +19,15 @@ function svgLogo(text) {
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg.trim())}`;
 }
 
-// URLs "estáveis" do Wikimedia Commons (não precisas do hash do upload.wikimedia)
+// URLs "estáveis" do Wikimedia Commons (quando existe ficheiro público)
 const commons = (filename) =>
   `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(filename)}`;
 
-// Canais (nota: alguns "diretos" podem não permitir embed em iframe)
+/**
+ * Canais (nota: alguns "diretos" podem não permitir embed em iframe — depende de X-Frame-Options/region)
+ * Atalhos:
+ * 1-9,0 e também Q/W/E/R para os 4 canais extra RTP (Açores/Madeira/Memória/Internacional)
+ */
 const channels = [
   // RTP
   {
@@ -112,6 +116,40 @@ const channels = [
     logo: commons("Porto Canal logo.jpg"),
     hotkey: "0",
   },
+
+  // +4 canais (RTP Play) — se algum logo falhar, usamos SVG bonito/consistente
+  {
+    key: "rtpacores",
+    name: "RTP Açores",
+    hint: "Regional",
+    url: "https://www.rtp.pt/play/direto/rtpacores",
+    logo: svgLogo("RTP Açores"),
+    hotkey: "q",
+  },
+  {
+    key: "rtpmadeira",
+    name: "RTP Madeira",
+    hint: "Regional",
+    url: "https://www.rtp.pt/play/direto/rtpmadeira",
+    logo: svgLogo("RTP Madeira"),
+    hotkey: "w",
+  },
+  {
+    key: "rtpmemoria",
+    name: "RTP Memória",
+    hint: "Arquivo / Clássicos",
+    url: "https://www.rtp.pt/play/direto/rtpmemoria",
+    logo: svgLogo("RTP Memória"),
+    hotkey: "e",
+  },
+  {
+    key: "rtpinternacional",
+    name: "RTP Internacional",
+    hint: "Diáspora",
+    url: "https://www.rtp.pt/play/direto/rtpinternacional",
+    logo: svgLogo("RTP Int."),
+    hotkey: "r",
+  },
 ];
 
 const els = {
@@ -178,6 +216,15 @@ function renderList() {
     logo.loading = "lazy";
     logo.src = ch.logo;
 
+    // Se um logo do Commons falhar, cai para SVG
+    logo.addEventListener(
+      "error",
+      () => {
+        logo.src = svgLogo(ch.name);
+      },
+      { once: true }
+    );
+
     const meta = document.createElement("div");
     meta.className = "channel-pill__meta";
     meta.innerHTML = `
@@ -230,6 +277,7 @@ function setupSearch() {
   if (!els.search) return;
 
   els.search.value = state.query;
+
   if (els.favOnly) els.favOnly.setAttribute("aria-pressed", String(state.favOnly));
   if (els.clearSearch) els.clearSearch.style.opacity = els.search.value ? "1" : "0.6";
 
@@ -259,14 +307,20 @@ function setupSearch() {
 
 function setupHotkeys() {
   window.addEventListener("keydown", (e) => {
-    if (e.target && ["INPUT", "TEXTAREA"].includes(e.target.tagName)) return;
+    const tag = e.target?.tagName;
+    if (tag && ["INPUT", "TEXTAREA"].includes(tag)) return;
 
     if (e.key.toLowerCase() === "r") {
-      els.frame.src = els.frame.src;
+      // NOTA: 'r' está a ser usado como hotkey para RTP Internacional;
+      // para recarregar, usa Shift+R.
+      if (e.shiftKey) els.frame.src = els.frame.src;
       return;
     }
 
-    const ch = channels.find((c) => c.hotkey === e.key);
+    if (e.key.toLowerCase() === "shift") return;
+
+    const pressed = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+    const ch = channels.find((c) => String(c.hotkey).toLowerCase() === pressed);
     if (ch) setActive(ch.key);
   });
 }
