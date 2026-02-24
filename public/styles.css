@@ -1,22 +1,35 @@
+/* styles.css — Layout “Dock inferior” (full width + responsivo ao viewport) */
+
 :root{
   color-scheme: dark;
   font-family: Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+
   --bg:#070a12;
   --panel:rgba(255,255,255,.06);
   --panel2:rgba(255,255,255,.08);
   --stroke:rgba(255,255,255,.10);
+
   --text:#eef2ff;
   --muted:rgba(238,242,255,.72);
   --muted2:rgba(238,242,255,.55);
+
   --accent:#6d7cff;
   --accent2:#9b5cff;
+
   --r:18px;
   --shadow:0 20px 60px rgba(0,0,0,.55);
 }
 
-*{box-sizing:border-box}
+*{ box-sizing:border-box; }
+
+html, body{
+  width:100%;
+  overflow-x:hidden; /* evita a página “alargar” */
+}
+
 body{
-  margin:0;color:var(--text);
+  margin:0;
+  color:var(--text);
   background:
     radial-gradient(1200px 700px at 20% -10%, rgba(109,124,255,.35), transparent 55%),
     radial-gradient(900px 600px at 105% 15%, rgba(155,92,255,.25), transparent 50%),
@@ -24,109 +37,293 @@ body{
     var(--bg);
 }
 
-.app{max-width:1200px;margin:0 auto;padding:22px;display:grid;gap:14px}
+/* APP FULL WIDTH */
+.app{
+  max-width:none;
+  width:100%;
+  margin:0;
+  padding:16px;
+  display:grid;
+  gap:14px;
+  min-width:0;
+}
 
+@media (min-width:1400px){
+  .app{ padding:20px 28px; }
+}
+
+/* TOPBAR */
 .topbar{
-  display:flex;align-items:center;justify-content:space-between;gap:14px;
-  padding:18px;border-radius:var(--r);
-  background:var(--panel);border:1px solid var(--stroke);
-  box-shadow:var(--shadow);backdrop-filter:blur(10px);
-}
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
 
-.brand{display:flex;align-items:center;gap:12px;min-width:0}
-.brand__dot{
-  width:12px;height:12px;border-radius:999px;
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
-  box-shadow:0 0 0 6px rgba(109,124,255,.12);
-}
-.brand__text h1{font-size:1.15rem;margin:0}
-.brand__text p{margin:3px 0 0;color:var(--muted);font-size:.92rem}
-
-.topbar__right{display:flex;gap:10px;align-items:center}
-
-.chip{
-  display:inline-flex;align-items:center;justify-content:center;gap:8px;
-  padding:10px 12px;border-radius:999px;
-  background:var(--panel2);border:1px solid var(--stroke);
-  color:var(--text);font-size:.92rem;cursor:pointer
-}
-.chip--toggle[aria-pressed="true"]{
-  border-color:rgba(109,124,255,.35);
-  background:linear-gradient(135deg, rgba(109,124,255,.22), rgba(155,92,255,.14));
-}
-
-.player{
-  padding:16px;border-radius:var(--r);
-  background:var(--panel);border:1px solid var(--stroke);
-  box-shadow:var(--shadow);backdrop-filter:blur(10px);
-}
-
-.player__head{display:flex;align-items:end;justify-content:space-between;gap:12px}
-.player__kicker{color:var(--muted2);font-size:.85rem;margin-bottom:4px}
-.player__title{margin:0;font-size:1.25rem;letter-spacing:.2px}
-
-.player__actions{display:flex;gap:10px}
-.btn{
-  padding:10px 12px;border-radius:12px;border:1px solid var(--stroke);
-  background:rgba(255,255,255,.06);color:var(--text);cursor:pointer;
-}
-.btn:hover{background:rgba(255,255,255,.08)}
-.btn--primary{
-  border-color:rgba(109,124,255,.35);
-  background:linear-gradient(135deg, rgba(109,124,255,.24), rgba(155,92,255,.18));
-}
-
-.video{
-  margin-top:14px;border-radius:16px;overflow:hidden;
-  border:1px solid rgba(255,255,255,.10);
-  background:rgba(0,0,0,.35);
-  aspect-ratio:16/9;
-}
-iframe{width:100%;height:100%;border:0}
-
-.player__foot{margin-top:12px}
-
-.search{
-  display:flex;align-items:center;gap:10px;
-  border-radius:14px;border:1px solid var(--stroke);
-  background:rgba(255,255,255,.04);
-  padding:10px 12px;
-}
-.search input{
-  width:100%;background:transparent;border:0;color:var(--text);
-  outline:none;font-size:.95rem;
-}
-.search__icon{opacity:.75;font-size:.95rem}
-.icon-btn{
-  width:28px;height:28px;border-radius:10px;
-  border:1px solid rgba(255,255,255,.10);
-  background:rgba(255,255,255,.06);
-  color:var(--text);cursor:pointer;
-}
-
-.dock{
-  padding:12px 12px;
+  padding:18px;
   border-radius:var(--r);
   background:var(--panel);
   border:1px solid var(--stroke);
   box-shadow:var(--shadow);
   backdrop-filter:blur(10px);
+
+  width:100%;
+  min-width:0;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  min-width:0;
+}
+
+.brand__dot{
+  width:12px;
+  height:12px;
+  border-radius:999px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  box-shadow:0 0 0 6px rgba(109,124,255,.12);
+}
+
+.brand__text{
+  min-width:0;
+}
+
+.brand__text h1{
+  font-size:1.15rem;
+  margin:0;
+  letter-spacing:.2px;
+}
+
+.brand__text p{
+  margin:3px 0 0;
+  color:var(--muted);
+  font-size:.92rem;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  max-width:min(60vw, 720px);
+}
+
+.topbar__right{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  flex:0 0 auto;
+}
+
+/* CHIPS */
+.chip{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+
+  padding:10px 12px;
+  border-radius:999px;
+
+  background:var(--panel2);
+  border:1px solid var(--stroke);
+
+  color:var(--text);
+  font-size:.92rem;
+  cursor:pointer;
+  user-select:none;
+}
+
+.chip--toggle[aria-pressed="true"]{
+  border-color:rgba(109,124,255,.35);
+  background:linear-gradient(135deg, rgba(109,124,255,.22), rgba(155,92,255,.14));
+}
+
+/* PLAYER */
+.player{
+  padding:16px;
+  border-radius:var(--r);
+
+  background:var(--panel);
+  border:1px solid var(--stroke);
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(10px);
+
+  width:100%;
+  min-width:0;
+}
+
+.player__head{
+  display:flex;
+  align-items:end;
+  justify-content:space-between;
+  gap:12px;
+  min-width:0;
+}
+
+.player__kicker{
+  color:var(--muted2);
+  font-size:.85rem;
+  margin-bottom:4px;
+}
+
+.player__title{
+  margin:0;
+  font-size:1.25rem;
+  letter-spacing:.2px;
+}
+
+.player__actions{
+  display:flex;
+  gap:10px;
+  flex:0 0 auto;
+}
+
+/* BUTTONS */
+.btn{
+  padding:10px 12px;
+  border-radius:12px;
+  border:1px solid var(--stroke);
+
+  background:rgba(255,255,255,.06);
+  color:var(--text);
+  cursor:pointer;
+
+  transition:transform 180ms ease, background 180ms ease, border-color 180ms ease;
+}
+
+.btn:hover{
+  transform:translateY(-1px);
+  background:rgba(255,255,255,.08);
+  border-color:rgba(255,255,255,.18);
+}
+
+.btn--primary{
+  border-color:rgba(109,124,255,.35);
+  background:linear-gradient(135deg, rgba(109,124,255,.24), rgba(155,92,255,.18));
+}
+
+/* VIDEO: adapta ao viewport */
+.video{
+  margin-top:14px;
+  border-radius:16px;
+  overflow:hidden;
+
+  border:1px solid rgba(255,255,255,.10);
+  background:rgba(0,0,0,.35);
+
+  width:100%;
+  max-width:100%;
+
+  /* altura dinâmica do player */
+  height:clamp(360px, 62vh, 78vh);
+
+  /* desliga o aspect-ratio fixo (agora manda a altura) */
+  aspect-ratio:auto;
+}
+
+iframe{
+  display:block;
+  width:100%;
+  height:100%;
+  max-width:100%;
+  border:0;
+}
+
+/* SEARCH (no rodapé do player) */
+.player__foot{
+  margin-top:12px;
+  width:100%;
+  min-width:0;
+}
+
+.search{
+  display:flex;
+  align-items:center;
+  gap:10px;
+
+  border-radius:14px;
+  border:1px solid var(--stroke);
+  background:rgba(255,255,255,.04);
+
+  padding:10px 12px;
+  width:100%;
+  min-width:0;
+}
+
+.search__icon{
+  opacity:.75;
+  font-size:.95rem;
+  flex:0 0 auto;
+}
+
+.search input{
+  width:100%;
+  min-width:0;
+  background:transparent;
+  border:0;
+  color:var(--text);
+  outline:none;
+  font-size:.95rem;
+}
+
+.icon-btn{
+  width:28px;
+  height:28px;
+  border-radius:10px;
+
+  border:1px solid rgba(255,255,255,.10);
+  background:rgba(255,255,255,.06);
+  color:var(--text);
+
+  cursor:pointer;
+  flex:0 0 auto;
+
+  transition:background 180ms ease, border-color 180ms ease;
+}
+
+.icon-btn:hover{
+  background:rgba(255,255,255,.08);
+  border-color:rgba(255,255,255,.18);
+}
+
+/* DOCK */
+.dock{
+  padding:12px;
+  border-radius:var(--r);
+
+  background:var(--panel);
+  border:1px solid var(--stroke);
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(10px);
+
+  width:100%;
+  min-width:0;
 }
 
 .dock__row{
   display:flex;
   gap:10px;
-  overflow:auto;
+
+  max-width:100%;
+  overflow-x:auto;
+  overflow-y:hidden;
+
   padding-bottom:4px;
   scroll-snap-type:x mandatory;
+
+  min-width:0;
 }
 
-.dock__row::-webkit-scrollbar{height:10px}
-.dock__row::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:999px}
+.dock__row::-webkit-scrollbar{ height:10px; }
+.dock__row::-webkit-scrollbar-thumb{
+  background:rgba(255,255,255,.12);
+  border-radius:999px;
+}
 
+/* CHANNEL PILLS (horizontais) */
 .channel-pill{
   min-width:220px;
+  max-width:320px; /* evita pills gigantes que empurram layout */
   flex:0 0 auto;
+
   scroll-snap-align:start;
 
   display:grid;
@@ -134,53 +331,91 @@ iframe{width:100%;height:100%;border:0}
   gap:12px;
   align-items:center;
 
-  padding:12px 12px;
+  padding:12px;
   border-radius:14px;
+
   border:1px solid var(--stroke);
   background:rgba(255,255,255,.04);
   color:var(--text);
+
   cursor:pointer;
   text-align:left;
+
   transition:transform 180ms ease, background 180ms ease, border-color 180ms ease;
 }
 
-.channel-pill:hover{transform:translateY(-1px);background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.18)}
+.channel-pill:hover{
+  transform:translateY(-1px);
+  background:rgba(255,255,255,.06);
+  border-color:rgba(255,255,255,.18);
+}
+
 .channel-pill.active{
   background:linear-gradient(135deg, rgba(109,124,255,.18), rgba(155,92,255,.12));
   border-color:rgba(109,124,255,.35);
+  box-shadow:0 0 0 1px rgba(109,124,255,.18);
 }
 
 .channel-pill__logo{
-  width:56px;height:34px;object-fit:contain;
+  width:56px;
+  height:34px;
+  object-fit:contain;
   filter:drop-shadow(0 8px 18px rgba(0,0,0,.55));
 }
 
-.channel-pill__name{font-weight:650;line-height:1.1}
-.channel-pill__hint{margin-top:3px;font-size:.86rem;color:var(--muted2)}
+.channel-pill__meta{ min-width:0; }
 
+.channel-pill__name{
+  font-weight:650;
+  line-height:1.1;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.channel-pill__hint{
+  margin-top:3px;
+  font-size:.86rem;
+  color:var(--muted2);
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+/* FAVORITE BUTTON */
 .fav-btn{
-  width:34px;height:34px;border-radius:12px;
+  width:34px;
+  height:34px;
+  border-radius:12px;
+
   border:1px solid rgba(255,255,255,.10);
   background:rgba(255,255,255,.05);
   color:rgba(238,242,255,.75);
-  cursor:pointer;display:grid;place-items:center;
+
+  cursor:pointer;
+  display:grid;
+  place-items:center;
+
+  transition:transform 180ms ease, background 180ms ease, border-color 180ms ease;
 }
-.fav-btn.is-fav{color:#ffd54a;border-color:rgba(255,213,74,.35);background:rgba(255,213,74,.10)}
 
-/* 1) Impede qualquer overflow horizontal de alargar a página */
-html, body { width: 100%; overflow-x: hidden; }
+.fav-btn:hover{
+  transform:translateY(-1px);
+  background:rgba(255,255,255,.08);
+  border-color:rgba(255,255,255,.18);
+}
 
-/* 2) Garante que os containers podem encolher (muito importante em flex/grid) */
-.app, .player, .dock, .dock__row { min-width: 0; }
+.fav-btn.is-fav{
+  color:#ffd54a;
+  border-color:rgba(255,213,74,.35);
+  background:rgba(255,213,74,.10);
+}
 
-/* 3) Travar o dock a não empurrar o layout */
-.dock { width: 100%; }
-.dock__row { max-width: 100%; overflow-x: auto; overflow-y: hidden; }
-
-/* 4) Player/Video: força a respeitar a largura do container */
-.player { width: 100%; }
-.video { width: 100%; max-width: 100%; }
-iframe { display: block; width: 100%; max-width: 100%; }
-
-/* 5) Se algum pill ainda estiver a forçar demasiado, limita */
-.channel-pill { max-width: 320px; }
+/* MOBILE TUNING */
+@media (max-width:640px){
+  .topbar{ padding:14px; }
+  .brand__text p{ display:none; }
+  .player{ padding:14px; }
+  .dock{ padding:10px; }
+  .video{ height:clamp(280px, 50vh, 68vh); }
+}
