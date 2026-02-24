@@ -3,23 +3,54 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Guia TV Portugal</title>
+    <title>Texugona TV</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <main class="app app--dock">
+    <!-- LOCK SCREEN -->
+    <div id="lock" class="lock" aria-modal="true" role="dialog">
+      <div class="lock__card">
+        <img class="lock__logo" src="logo.png" alt="Texugona TV" />
+        <h2 class="lock__title">Texugona TV</h2>
+        <p class="lock__hint">Introduz a password para entrar</p>
+
+        <form id="lock-form" class="lock__form" autocomplete="off">
+          <input
+            id="pin"
+            class="lock__input"
+            type="password"
+            placeholder="Password"
+            aria-label="Password"
+            required
+          />
+
+          <label class="lock__remember">
+            <input id="remember-days" type="number" min="1" max="365" step="1" />
+            <span>Lembrar (dias)</span>
+          </label>
+
+          <button class="btn btn--primary lock__btn" type="submit">Entrar</button>
+        </form>
+
+        <p id="lock-error" class="lock__error" aria-live="polite"></p>
+      </div>
+    </div>
+
+    <main id="app" class="app app--dock">
       <header class="topbar">
-<div class="brand">
-  <img class="brand__logo" src="logo.png" alt="Texugona TV" />
-  <div class="brand__text">
-    <h1>Texugona TV</h1>
-    <p>Pesquisa + Favoritos ⭐ + Direto</p>
-  </div>
-</div>
+        <div class="brand">
+          <img class="brand__logo" src="logo.png" alt="Texugona TV" />
+          <div class="brand__text">
+            <h1>Texugona TV</h1>
+            <p>Pesquisa + Favoritos ⭐ + Direto</p>
+          </div>
+        </div>
 
         <div class="topbar__right">
           <div class="chip" id="clock">--:--</div>
-          <button id="fav-only" class="chip chip--toggle" type="button" aria-pressed="false">⭐</button>
+          <button id="fav-only" class="chip chip--toggle" type="button" aria-pressed="false" title="Só favoritos">
+            ⭐
+          </button>
         </div>
       </header>
 
@@ -30,8 +61,8 @@
             <h2 id="channel-title" class="player__title">—</h2>
           </div>
           <div class="player__actions">
-            <button class="btn" id="btn-reload" type="button">Recarregar</button>
-            <button class="btn btn--primary" id="btn-fullscreen" type="button">Ecrã inteiro</button>
+            <button class="btn" id="btn-reload" type="button" title="Recarregar stream">Recarregar</button>
+            <button class="btn btn--primary" id="btn-fullscreen" type="button" title="Ecrã inteiro">Ecrã inteiro</button>
           </div>
         </div>
 
