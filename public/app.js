@@ -105,8 +105,8 @@ const commons = (filename) =>
  */
 const channels = [
   // RTP
-  { key: "rtp1", name: "RTP1", hint: "Generalista", url: "https://sportzonline.click/channels/pt/sporttv1.php", logo: "https://api.cdn-live.tv/api/v1/channels/images6318/portugal/sport-tv-1.svg", hotkey: "1" },
-  { key: "rtp2", name: "RTP2", hint: "Cultura", url: "https://www.rtp.pt/play/direto/rtp2", logo: commons("RTP2 2016 (Reduced Version).svg"), hotkey: "2" },
+  { key: "rtp1", name: "Sport TV 1", hint: "Desporto", url: "https://sportzonline.click/channels/pt/sporttv1.php", logo: "https://www.sporttv.pt/logos/sporttv-1-rebrand.svg", hotkey: "1" },
+  { key: "rtp2", name: "Sport TV 2", hint: "Desporto", url: "https://sportzonline.click/channels/pt/sporttv2.php", logo: "https://www.sporttv.pt/logos/sporttv-2-rebrand.svg", hotkey: "2" },
   { key: "rtp3", name: "RTP3", hint: "Notícias", url: "https://www.rtp.pt/play/direto/rtp3", logo: commons("RTP3 2016 (Reduced Version).svg"), hotkey: "3" },
 
   // Generalistas
