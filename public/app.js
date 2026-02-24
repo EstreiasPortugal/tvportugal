@@ -105,7 +105,7 @@ const commons = (filename) =>
  */
 const channels = [
   // RTP
-  { key: "rtp1", name: "RTP1", hint: "Generalista", url: "https://sportzonline.click/channels/pt/sporttv1.php", logo: commons("RTP1 - Logo 2016.svg"), hotkey: "1" },
+  { key: "rtp1", name: "RTP1", hint: "Generalista", url: "https://sportzonline.click/channels/pt/sporttv1.php", logo: "https://megatuga.io/imagens/icones/sporttvv1.png", hotkey: "1" },
   { key: "rtp2", name: "RTP2", hint: "Cultura", url: "https://www.rtp.pt/play/direto/rtp2", logo: commons("RTP2 2016 (Reduced Version).svg"), hotkey: "2" },
   { key: "rtp3", name: "RTP3", hint: "Notícias", url: "https://www.rtp.pt/play/direto/rtp3", logo: commons("RTP3 2016 (Reduced Version).svg"), hotkey: "3" },
 
